@@ -27,6 +27,18 @@ static std::optional<std::vector<std::byte>> ReadFile(const std::string &path)
     return std::move(contents);
 }
 
+// Read user input
+float get_input(const std::string &s) {
+    float v;
+    while (true) {
+        std::cout << s << "\n";
+        std::cin >> v;
+        if (0 <= v && v <= 100)
+            break;
+    }
+    return v;
+}
+
 int main(int argc, const char **argv)
 {    
     std::string osm_data_file = "";
@@ -51,16 +63,24 @@ int main(int argc, const char **argv)
         else
             osm_data = std::move(*data);
     }
-    
+
     // TODO 1: Declare floats `start_x`, `start_y`, `end_x`, and `end_y` and get
     // user input for these values using std::cin. Pass the user input to the
     // RoutePlanner object below in place of 10, 10, 90, 90.
+    std::string input_str = "Enter start_x, acceptable range is [0, 100]:";
+    float start_x = get_input(input_str);
+    input_str = "Enter start_y, acceptable range is [0, 100]:";
+    float start_y = get_input(input_str);
+    input_str = "Enter end_x, acceptable range is [0, 100]:";
+    float end_x = get_input(input_str);
+    input_str = "Enter end_y, acceptable range is [0, 100]:";
+    float end_y = get_input(input_str);
 
     // Build Model.
     RouteModel model{osm_data};
 
     // Create RoutePlanner object and perform A* search.
-    RoutePlanner route_planner{model, 10, 10, 90, 90};
+    RoutePlanner route_planner{model, start_x, start_y, end_x, end_y};
     route_planner.AStarSearch();
 
     std::cout << "Distance: " << route_planner.GetDistance() << " meters. \n";
